@@ -1,0 +1,17 @@
+services:
+  kostekd-ui:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: kostekd-ui
+    restart: unless-stopped
+    environment:
+      HOST: 0.0.0.0
+      PORT: 4321
+    networks:
+      - vps_net
+
+networks:
+  vps_net:
+    external: true
+    name: vps_net
