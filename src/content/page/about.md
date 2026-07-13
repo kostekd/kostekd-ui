@@ -1,14 +1,8 @@
 ---
 title: About
-description: A short introduction. Replace this in src/content/page/about.md.
+description: A little about me and this site.
 ---
 
-This is the About page. It's a markdown file at `src/content/page/about.md` — edit it freely. The shape is intentionally unstructured so you can write a paragraph, a list, a CV, or whatever fits.
+I'm still figuring out what I'll write about here — probably a mix of things I'm learning, building, and thinking through. For now, consider this a work in progress.
 
-A few example bullets to get going:
-
-- 👋 One-line intro — what you do, where, since when.
-- 🛠 The tools you reach for first.
-- 📝 What you tend to write about here.
-
-Find me on [GitHub](https://github.com/example), [LinkedIn](https://www.linkedin.com/in/example/), or by [email](mailto:john@example.com).
+You can find me on [GitHub](https://github.com/kostekd), [LinkedIn](https://www.linkedin.com/in/dominik-kostencki-15b0591a1/), or by [email](mailto:dominikkostencki99@gmail.com).

@@ -74,7 +74,11 @@ const goatcounter = analytics?.goatcounterUrl;
 
 <link href={withBase("/sitemap-index.xml")} rel="sitemap"/>
 
-<link href={withBase("/rss.xml")} rel="alternate" title={siteConfig.title} type="application/rss+xml"/>
+{
+	!siteConfig.hideRss && (
+		<link href={withBase("/rss.xml")} rel="alternate" title={siteConfig.title} type="application/rss+xml"/>
+	)
+}
 
 {
     siteConfig.webmentions && (
