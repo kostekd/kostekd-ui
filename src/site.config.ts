@@ -21,7 +21,7 @@ export const siteConfig: SiteConfig = {
 	hideRss: true,
 	profile: {
 		name: "Dominik Kostencki",
-		email: "dominikkostencki99@gmail.com",
+		// email: "dominikkostencki99@gmail.com",
 		github: "https://github.com/kostekd",
 		linkedin: "https://www.linkedin.com/in/dominik-kostencki-15b0591a1/",
 		jobTitle: "Software Engineer",
