@@ -66,10 +66,10 @@ const siteUrl = (path: string) => absoluteUrl(path, Astro.site);
 			{profile?.email && (
 				<>
 					<a href={`mailto:${profile.email}`}>Email</a>
-					<span class="sep">·</span>
+					{!siteConfig.hideRss && <span class="sep">·</span>}
 				</>
 			)}
-			<a href={withBase("/rss.xml")}>RSS</a>
+			{!siteConfig.hideRss && <a href={withBase("/rss.xml")}>RSS</a>}
 		</div>
 	</section>
 

@@ -66,6 +66,8 @@ export interface SiteConfig {
 		pingback?: string;
 	};
 	hideThemeCredit?: boolean;
+	/** Hide RSS links in the UI; the /rss.xml feed still works when omitted. */
+	hideRss?: boolean;
 }
 
 export interface SiteMeta {
