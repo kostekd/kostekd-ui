@@ -1,6 +1,6 @@
 ---
 title: "Hello, world"
-publishDate: 2026-03-01
+publishDate: 2024-01-07
 description: "A first post — and a quick tour of what the writing template can render."
 tags: [ intro, demo, guide ]
 ---
