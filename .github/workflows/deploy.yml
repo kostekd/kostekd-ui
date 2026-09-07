@@ -34,13 +34,25 @@ jobs:
             ${{ env.IMAGE_NAME }}:latest
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
+      # GHCR images are private. The VPS must log in before docker pull, or
+      # GHCR returns 403 and the host keeps the previously cached image.
+      # appleboy/ssh-action does not fail the job on a non-zero command unless
+      # the remote script uses `set -e`.
       - uses: appleboy/ssh-action@v1
+        env:
+          GHCR_USER: ${{ github.repository_owner }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN || github.token }}
+          DEPLOY_IMAGE: ${{ env.IMAGE_NAME }}:${{ github.sha }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          envs: GHCR_USER,GHCR_TOKEN,DEPLOY_IMAGE
           script: |
-            docker pull ghcr.io/kostekd/kostekd-ui:latest
+            set -euo pipefail
+            trap 'docker logout ghcr.io >/dev/null 2>&1 || true' EXIT
+            printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            docker pull "$DEPLOY_IMAGE"
             docker stop kostekd-ui 2>/dev/null || true
             docker rm kostekd-ui 2>/dev/null || true
             docker run -d \
@@ -51,5 +63,10 @@ jobs:
               -e PORT=4321 \
               -e VIRTUAL_HOST=kostekd.com \
               -e VIRTUAL_PORT=4321 \
-              ghcr.io/kostekd/kostekd-ui:latest
+              "$DEPLOY_IMAGE"
+            if ! docker ps --no-trunc --filter "name=kostekd-ui" --filter "status=running" | grep -F "$DEPLOY_IMAGE"; then
+              echo "Deploy verification failed: kostekd-ui is not running $DEPLOY_IMAGE" >&2
+              docker ps -a --no-trunc --filter "name=kostekd-ui" || true
+              exit 1
+            fi
             docker image prune -f
