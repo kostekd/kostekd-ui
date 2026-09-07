@@ -22,7 +22,7 @@ A pull request against `main` hits `.github/workflows/ci.yml`. Lint, `pnpm build
 Push to `main` hits `.github/workflows/deploy.yml`:
 
 1. The Actions runner logs into GHCR with `GITHUB_TOKEN` (`packages: write`).
-2. It builds and pushes two tags: `:latest` and `:<commit sha>`.
+2. It builds and pushes two tags: `:latest`, and one with the git SHA.
 3. It SSHes into the VPS (`appleboy/ssh-action`) with `VPS_HOST` / `VPS_USER` / `VPS_SSH_KEY`, pulls the image, and replaces the `kostekd-ui` container.
 
 1 and 2 were fine. 3 is the part that quietly did nothing.
