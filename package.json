@@ -71,6 +71,8 @@
 		"reading-time": "^1.5.0",
 		"rehype-unwrap-images": "^1.0.0",
 		"tailwindcss": "^4.3.2",
-		"typescript": "^6.0.3"
-	}
+		"typescript": "^6.0.3",
+		"nx": "23.2.1"
+	},
+	"nx": {}
 }
