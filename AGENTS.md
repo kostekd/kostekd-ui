@@ -3,10 +3,12 @@
 When starting the dev server, use background mode:
 
 ```
-astro dev --background
+pnpm --dir web/kostekd-ui astro dev --background
 ```
 
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+Manage the background server with `pnpm --dir web/kostekd-ui astro dev stop`,
+`pnpm --dir web/kostekd-ui astro dev status`, and
+`pnpm --dir web/kostekd-ui astro dev logs`.
 
 ## Documentation
 
