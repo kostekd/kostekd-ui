@@ -1,9 +1,9 @@
-# Astro Sienna
+# kostekd-ui
 
-A minimal Astro blog template with serif typography, dark mode, RSS, OG images, and optional Giscus comments and
-analytics.
+The Nx workspace for [kostekd.com](https://kostekd.com). The Astro application lives in
+`web/kostekd-ui`.
 
-**Live demo:** [Github Pages](https://anjay-goel.github.io/astro-sienna)
+**Live site:** [kostekd.com](https://kostekd.com)
 
 ![Astro Sienna home page in dark and light themes](.github/assets/preview.png)
 
@@ -28,11 +28,7 @@ analytics.
 
 ## Quick start
 
-Click **Use this template** on GitHub, or clone directly:
-
 ```sh
-git clone https://github.com/anjay-goel/astro-sienna.git my-site
-cd my-site
 pnpm install
 pnpm dev
 ```
@@ -49,18 +45,28 @@ Open http://localhost:4321.
 | `pnpm format`  | Run Biome and Prettier                       |
 | `pnpm lint`    | Lint with Biome                              |
 
+Root commands delegate to the `kostekd-ui` Nx project. You can also run targets explicitly:
+
+```sh
+pnpm nx run kostekd-ui:dev
+pnpm nx run kostekd-ui:lint
+pnpm nx run kostekd-ui:build
+```
+
 ## Configuration
 
 Most personalisation happens in two files.
 
-**`src/site.config.ts`** holds author, profile, comments, analytics, and webmentions. Every field in `profile` is
-optional. Leave any of `email`, `github`, `linkedin`, `employer`, `alumni`, or `avatar` undefined and the corresponding
-link is hidden site-wide. Same for `comments` and `analytics`: undefined means the script never loads.
+**`web/kostekd-ui/src/site.config.ts`** holds author, profile, comments, analytics, and webmentions.
+Every field in `profile` is optional. Leave any of `email`, `github`, `linkedin`, `employer`, `alumni`,
+or `avatar` undefined and the corresponding link is hidden site-wide. Same for `comments` and
+`analytics`: undefined means the script never loads.
 
-**`astro.config.ts`** is where you set `site` to your final domain (used for canonical URLs, sitemap, RSS, and OG image
-URLs). The base path is handled automatically — see [Deploying](#deploying); you normally don't touch it.
+**`web/kostekd-ui/astro.config.ts`** is where you set `site` to your final domain (used for canonical
+URLs, sitemap, RSS, and OG image URLs). The base path is handled automatically — see
+[Deploying](#deploying); you normally don't touch it.
 
-Replace these assets in `public/`:
+Replace these assets in `web/kostekd-ui/public/`:
 
 - `icon.png` (512×512). Drives the favicon and the auto-generated `apple-touch-icon`, `icon-192`, and `icon-512` PWA
   manifest icons.
@@ -72,12 +78,14 @@ Replace these assets in `public/`:
 ### Per-post OG images
 
 Every post gets its own 1200×630 OG image generated at build time by [Satori](https://github.com/vercel/satori). The
-markup lives in `src/pages/og-image/[...slug].png.ts`. Tweak it once and every post's card updates on the next build. To
-skip the generated image and point a post at your own, set `ogImage: "/path/to/image.png"` in the post's frontmatter.
+markup lives in `web/kostekd-ui/src/pages/og-image/[...slug].png.ts`. Tweak it once and every post's
+card updates on the next build. To skip the generated image and point a post at your own, set
+`ogImage: "/path/to/image.png"` in the post's frontmatter.
 
 ## Writing posts
 
-Posts live in `src/content/post/` as `.md` or `.mdx` files. The filename becomes the slug.
+Posts live in `web/kostekd-ui/src/content/post/` as `.md` or `.mdx` files. The filename becomes the
+slug.
 
 ```yaml
 ---
@@ -93,49 +101,46 @@ tags: [ tag-one, tag-two ]
 ---
 ```
 
-The about page is also markdown, at `src/content/page/about.md`. Showcase entries are typed objects in
-`src/data/showcase.ts`; empty the array and the Showcase tab is hidden automatically.
+The about page is also markdown, at `web/kostekd-ui/src/content/page/about.md`. Showcase entries are
+typed objects in `web/kostekd-ui/src/data/showcase.ts`; empty the array and the Showcase tab is
+hidden automatically.
 
 ## Project layout
 
 ```
-src/
-  site.config.ts        # author / profile / integrations
-  content.config.ts     # collection schemas (post, page)
-  content/
-    post/*.md           # blog posts
-    page/about.md       # about page
-  data/showcase.ts      # showcase entries (or empty for none)
-  components/           # blog/, layout/
-  layouts/              # Base.astro, BlogPost.astro
-  pages/                # routes (incl. /og-image, /posts pagination, /tags, rss)
-  plugins/              # remark-admonitions, remark-reading-time, rehype-base-path
-  styles/global.css     # design tokens and shared utilities
-public/                 # static assets served at site root
+web/
+  kostekd-ui/
+    package.json        # app scripts and dependencies; inferred Nx project
+    astro.config.ts
+    src/                # pages, content, components, styles, and plugins
+    public/             # static assets served at site root
+nx.json                 # workspace layout and target defaults
+package.json            # root Nx command aliases
+pnpm-workspace.yaml
 ```
 
 ## Theming
 
-Design tokens are CSS variables at the top of `src/styles/global.css`: accent colour, hairlines, surfaces, fonts. The
-light and dark variants are gated by `[data-theme="light"]` and `[data-theme="dark"]` on the `<html>` element, so
-swapping them is a single re-render with no script.
+Design tokens are CSS variables at the top of `web/kostekd-ui/src/styles/global.css`: accent colour,
+hairlines, surfaces, fonts. The light and dark variants are gated by `[data-theme="light"]` and
+`[data-theme="dark"]` on the `<html>` element, so swapping them is a single re-render with no script.
 
 Code-block themes are configured separately in `expressiveCodeOptions` in `site.config.ts` (defaults: `min-light` and
 `min-dark`).
 
 ## Deploying
 
-Output is a static `dist/` directory that deploys anywhere serving files: Cloudflare Pages, Netlify, Vercel, GitHub
-Pages, S3 + CloudFront. Build command: `pnpm build`. Output directory: `dist`.
+The app uses Astro's standalone Node adapter. `pnpm build` creates the production server under
+`web/kostekd-ui/dist/server/entry.mjs` and Pagefind indexes the generated client pages.
+
+Pull requests verify the Nx lint/build targets and the production Docker image. Merges to `main`
+build and push `ghcr.io/kostekd/kostekd-ui`, then the deploy workflow replaces the running
+`kostekd-ui` container on the VPS.
 
 ### Base path
 
-Defaults to root (`/`) — no config needed for local dev, Netlify, Vercel, Cloudflare Pages, a custom domain, or a
-GitHub Pages **user** site. The whole site (links, assets, feeds, OG/canonical, manifest, Markdown links) is base-aware.
-
-For a GitHub Pages **project** site (served from `/repo/`), the bundled `.github/workflows/deploy.yml` detects the
-subpath and configures it automatically; the only manual step is **Settings → Pages → Source: GitHub Actions**. For a
-subpath on any other host, build with `BASE_PATH=/sub pnpm build`.
+Defaults to root (`/`). The whole site (links, assets, feeds, OG/canonical, manifest, Markdown links)
+is base-aware. For a subpath deployment, build with `BASE_PATH=/sub pnpm build`.
 
 ## Pulling theme updates
 
@@ -147,8 +152,9 @@ git fetch theme
 git merge theme/main --allow-unrelated-histories
 ```
 
-Use `.gitattributes` with a `merge=ours` driver on personal-content paths (e.g. `src/content/post/*`,
-`src/site.config.ts`, `public/avatar.png`) to keep your changes through the merge.
+Use `.gitattributes` with a `merge=ours` driver on personal-content paths (e.g.
+`web/kostekd-ui/src/content/post/*`, `web/kostekd-ui/src/site.config.ts`,
+`web/kostekd-ui/public/avatar.png`) to keep your changes through the merge.
 
 ## Credits
 

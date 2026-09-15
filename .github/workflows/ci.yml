@@ -23,9 +23,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm lint
+      - run: pnpm nx run kostekd-ui:lint
 
-      - run: pnpm build
+      - run: pnpm nx run kostekd-ui:build
 
   docker:
     name: Docker build
